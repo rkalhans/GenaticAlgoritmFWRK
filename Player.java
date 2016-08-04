@@ -19,9 +19,9 @@ public class Player
         @Override
         public int compare(Score x, Score y)
         {
-			if(x == null && y == null) return 0;
-			if(x == null) return 1;
-			if(y == null) return -1;
+            if(x == null && y == null) return 0;
+            if(x == null) return 1;
+            if(y == null) return -1;
             if (x.score < y.score)
             {
                 return 1;
