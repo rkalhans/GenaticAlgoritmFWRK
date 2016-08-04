@@ -19,10 +19,9 @@ public class Player
         @Override
         public int compare(Score x, Score y)
         {
-            // Assume neither string is null. Real code should
-            // probably be more robust
-            // You could also just return x.length() - y.length(),
-            // which would be more efficient.
+			if(x == null && y == null) return 0;
+			if(x == null) return 1;
+			if(y == null) return -1;
             if (x.score < y.score)
             {
                 return 1;
