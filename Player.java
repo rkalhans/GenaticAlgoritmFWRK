@@ -61,10 +61,10 @@ public class Player
             this.timeoutMs = timeoutMs;
             ExecutorScores = new Score[poolSize];
         }
-        public void start(List<T>chromosomesList, CrossoverAlgo<T> algo) {
+        public void start(List<T>chromosomesList, List<CrossoverAlgo<T>> algos) {
 
 
-            Thread t = new Thread(new Scheduler(chromosomesList, algo));
+            Thread t = new Thread(new Scheduler(chromosomesList, algos));
             t.start();
             try {
                 Thread.sleep((int)(timeoutMs*WAITTIME_PERCENTAGE));
@@ -94,15 +94,19 @@ public class Player
         class Scheduler implements Runnable {
 
             List<T> chromomome ;
-            CrossoverAlgo<T> algo;
-            public Scheduler(List<T> chromosomesList, CrossoverAlgo<T> algo){
+            List<CrossoverAlgo<T>> algos;
+            public Scheduler(List<T> chromosomesList, List<CrossoverAlgo<T>> algos){
                 this.chromomome = chromosomesList;
-                this.algo = algo;
+                this.algos = algos;
             };
 
             @Override
             public void run() {
-               pool.submit(new GAExecutor<T>(0, chromomome, algo));
+            	int idx =0;
+              for(CrossoverAlgo<T> algo: algos)
+              {
+                  pool.submit(new GAExecutor<T>(idx++, chromomome, algo));
+              }
             }
         }
     }
@@ -216,7 +220,10 @@ public class Player
         List<GraphChromosome> list = new ArrayList<>(2);
         list.add(new GraphChromosome(0.10));
         list.add(new GraphChromosome(1.3));
+        
+        List<CrossoverAlgo<GraphChromosome>> algos =  new ArrayList<CrossoverAlgo<GraphChromosome>>();
+        algos.add(new GraphCrossOverAlgo());
         GeneticAlgo<GraphChromosome> GA = new GeneticAlgo<>(1, 100);
-        GA.start(list, new GraphCrossOverAlgo());
+        GA.start(list,algos );
     }
 }
